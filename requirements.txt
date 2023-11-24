@@ -1,0 +1,15 @@
+# Data Science and Data Manipulation
+pandas
+numpy
+xgboost
+
+# Data Preprocessing and Transformation
+scikit-learn
+imbalanced-learn
+
+# Data Visualization
+matplotlib
+seaborn
+
+ipykernel
+jupyter
