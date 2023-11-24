@@ -20,6 +20,7 @@ This project contains various components for [describe what your project does or
 ## Usage
 ...
 ## Installation
+Unzip `./data/raw/compressed_data.zip`.
 ### Pip + Virtualenv
 
 An alternative to Conda is to use pip and virtualenv to manage your environments.
