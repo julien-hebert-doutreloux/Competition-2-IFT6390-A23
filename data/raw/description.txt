@@ -1,0 +1,26 @@
+The original MNIST image dataset of handwritten digits is a popular benchmark for image-based machine learning methods but researchers have renewed efforts to update it and develop drop-in replacements that are more challenging for computer vision and original for real-world applications. As noted in one recent replacement called the Fashion-MNIST dataset, the Zalando researchers quoted the startling claim that "Most pairs of MNIST digits (784 total pixels per sample) can be distinguished pretty well by just one pixel". To stimulate the community to develop more drop-in replacements, the Sign Language MNIST is presented here and follows the same CSV format with labels and pixel values in single rows. The American Sign Language letter database of hand gestures represent a multi-class problem with 24 classes of letters (excluding J and Z which require motion).
+
+The dataset format is patterned to match closely with the classic MNIST. Each training case represents a label (0-25) as a one-to-one map for each alphabetic letter A-Z (and no cases for 9=J or 25=Z because of gesture motions). The training data (27,455 cases) and test data (3000 cases) are approximately half the size of the standard MNIST but otherwise similar with a header row of label, pixel1,pixel2….pixel784 which represent a single 28x28 pixel image with grayscale values between 0-255. The original hand gesture image data represented multiple users repeating the gesture against different backgrounds.
+
+For the test data, however, we provide per ID (row) two images concatenated to each other, for instance, for the ID - 0, the columns will look like:
+[pixel_a1, pixel_a2, pixel_a3, ....., pixel_a784, pixel_b1, pixel_b2, ...., pixel_b784]
+
+Here, columns starting with pixel_a correspond to Image A pixel values (784 total columns) and columns starting with pixel_b correspond to Image B pixel values (784 total columns).
+
+The goal is to first classify the two images per ID - Image A and Image B correctly to their respective labels mapped to the corresponding alphabets. Then, you are expected to convert them to their respective ASCII values. After obtaining their ASCII values you are expected to sum the two ASCII values and convert the resultant summed ASCII value back to its corresponding character. This final character will be the label that the accuracy on the test set will be computed against.
+
+To note:
+
+    The labels on Image A and Image B for every ID are only in upper case alphabets (A-Z).
+    The final resultant character after the ASCII sum and conversion can be both in upper and lower case characters (including special characters).
+    If the ASCII sum exceeds 122 (ASCII for 'z') then you are expected to subtract the lower bound ASCII - 65 (ASCII for 'A') from the computed sum until your resultant value is within the range of 65-122 ASCII value.
+    The final character computed must be converted to string dtype for consistency.
+
+The labels of the test set are not available while the competition is active.
+
+Files
+
+    sign_mnist_train.csv - the training set
+    test.csv - the test set
+    sample_submission.csv - a sample submission file in the correct format
+
