@@ -6,10 +6,13 @@ xgboost
 # Data Preprocessing and Transformation
 scikit-learn
 imbalanced-learn
-
+tensorflow
+keras
+pyarrow
 # Data Visualization
 matplotlib
 seaborn
 
 ipykernel
 jupyter
+
