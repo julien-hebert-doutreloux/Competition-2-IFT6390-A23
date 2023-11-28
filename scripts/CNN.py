@@ -55,8 +55,8 @@ class CNN:
         y_test_one_hot = lb.fit_transform(y_test)
 
         # Evaluate the model on the test set
-        model.evaluation = self.model.evaluate(X_test, y_test_one_hot)
-        return model.evaluation
+        return self.model.evaluate(X_test, y_test_one_hot)
+        
         
     def get_params(self, deep=True):
         return {

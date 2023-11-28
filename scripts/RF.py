@@ -164,13 +164,15 @@ class RF:
             x_subset, y_subset = X[rows_idx][:,cols_idx], y[rows_idx]
             tree = DTC(max_depth=self.max_depth)
             tree.fit(x_subset, y_subset)
-            self.estimators.append((tree,cols_idx))
+            self.estimators.append((tree, cols_idx))
             
         return self
     
     def predict(self, X):
         # Predict output using all estimators here
-        allpredictions=np.array([t.predict(X[:,col]) for t, col in self.estimators])
+        allpredictions=np.array(
+            [t.predict(X[:,col]) for (t, col) in self.estimators]
+        )
         predictions= np.array([get_majority_class(y) for y in allpredictions.T])
         return predictions
         
