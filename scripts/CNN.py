@@ -35,7 +35,7 @@ class CNN:
         self.model.compile(optimizer = 'adam' , loss = 'categorical_crossentropy' , metrics = ['accuracy'])
 
         
-    def fit(self, X_train, y_train, X_val, y_val, epochs=10, batch_size=32):
+    def fit(self, X_train, y_train, X_val, y_val, epochs=10, batch_size=128):
         # Convert labels to one-hot encoding
         self.num_classes = np.unique(y_train)
         lb = LabelBinarizer()

@@ -37,5 +37,28 @@ def experience1():
     y_pred = model.predict(X_test.values)
 
     print(np.mean(y_test==y_pred))
-    # export
+    
+    # prediction on test
+    test_df = pd.read_csv(os.path.join('data','raw','test.csv'))
+    
+    # Splitting columns A1 to A784 into a separate DataFrame
+    df_A = test_df.filter(like='pixel_a')
+    test_A = df_A.values.reshape(-1,28,28,1)
+    y_pred_A = np.argmax(model.predict(test_A),axis=1)
+    
+    # Splitting columns B1 to B784 into a separate DataFrame
+    df_B = test_df.filter(like='pixel_b')
+    test_B = df_B.values.reshape(-1,28,28,1)
+    y_pred_B = np.argmax(model.predict(test_A),axis=1)
+    
+    
+    transformed_labels = [transform_labels(label_A, label_B) for label_A, label_B in zip(y_pred_A, y_pred_B)]
+    
+    IDS = np.arange(len(transformed_labels))
+    res = pd.DataFrame(data={"id":IDS, 'label':transformed_labels})
+    
+    prediction_path = os.path.join('data','prediction','cnn.csv')
+    print(res.head(10))
+    print(np.unique(res['label'], return_counts=True))
+    res.to_csv(prediction_path, index=False)
 experience1()
