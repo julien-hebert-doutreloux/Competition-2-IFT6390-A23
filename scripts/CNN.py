@@ -8,11 +8,10 @@ from keras.callbacks import ReduceLROnPlateau
 
 
 class CNN:
-    def __init__(self, input_shape, num_classes, *args, **kwargs):
+    def __init__(self, num_classes, *args, **kwargs):
         # Initialize your custom parameters here
         # Initialize any other variables needed
         self.model = Sequential()
-        self.input_shape = input_shape
         self.num_classes = num_classes
         self.learning_rate_reduction = ReduceLROnPlateau(monitor='val_accuracy', patience = 2, verbose=1,factor=0.5, min_lr=0.00001)
         # Build the CNN model
@@ -61,7 +60,6 @@ class CNN:
         
     def get_params(self, deep=True):
         return {
-            'input_shape': self.input_shape,
             'num_classes': self.num_classes,
             # Add any other parameters here
         }
