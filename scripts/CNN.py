@@ -1,38 +1,65 @@
+import numpy as np
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelBinarizer
+from keras.models import Sequential
+from keras.layers import Dense, Conv2D, MaxPool2D, Flatten, Dropout, BatchNormalization
+from keras.callbacks import ReduceLROnPlateau
+
+
 class CNN:
-    def __init__(self, *args, **kwargs):
+    def __init__(self, input_shape, num_classes, *args, **kwargs):
         # Initialize your custom parameters here
         # Initialize any other variables needed
-        pass
+        self.model = Sequential()
+        self.input_shape = input_shape
+        self.num_classes = num_classes
+
+        # Build the CNN model
+        self.build_model()
+
+    def build_model(self):
+        # Build the CNN model architecture
+        self.model.add(Conv2D(75 , (3,3) , strides = 1 , padding = 'same' , activation = 'relu' , input_shape = (28,28,1)))
+        self.model.add(BatchNormalization())
+        self.model.add(MaxPool2D((2,2) , strides = 2 , padding = 'same'))
+        self.model.add(Conv2D(50 , (3,3) , strides = 1 , padding = 'same' , activation = 'relu'))
+        self.model.add(Dropout(0.2))
+        self.model.add(BatchNormalization())
+        self.model.add(MaxPool2D((2,2) , strides = 2 , padding = 'same'))
+        self.model.add(Conv2D(25 , (3,3) , strides = 1 , padding = 'same' , activation = 'relu'))
+        self.model.add(BatchNormalization())
+        self.model.add(MaxPool2D((2,2) , strides = 2 , padding = 'same'))
+        self.model.add(Flatten())
+        self.model.add(Dense(units = 512 , activation = 'relu'))
+        self.model.add(Dropout(0.3))
+        self.model.add(Dense(units = 24 , activation = 'softmax'))
+        self.model.compile(optimizer = 'adam' , loss = 'categorical_crossentropy' , metrics = ['accuracy'])
+
         
-    def fit(self, X, y):
-        # Implement the fitting logic here
-        # X: array-like, shape (n_samples, n_features)
-        # y: array-like, shape (n_samples,)
-        
-        # Your fitting algorithm goes here
-        
-        # Return the estimator
-        return self
-    
+    def fit(self, X_train, y_train, X_val, y_val, epochs=10, batch_size=32):
+        # Convert labels to one-hot encoding
+        lb = LabelBinarizer()
+        y_train_one_hot = lb.fit_transform(y_train)
+        y_val_one_hot = lb.fit_transform(y_val)
+        # Train the model
+        self.model.fit(X_train, y_train_one_hot, epochs=epochs, batch_size=batch_size, validation_data=(X_val, y_val_one_hot))
+
     def predict(self, X):
-        # Implement the prediction logic here
-        # X: array-like, shape (n_samples, n_features)
-        
-        # Your prediction algorithm goes here
-        
-        # Return the predictions
+        # Your prediction logic goes here
+        predictions = self.model.predict(X)
         return predictions
-        
-        
+
     def get_params(self, deep=True):
         return {
-            ...
+            'input_shape': self.input_shape,
+            'num_classes': self.num_classes,
+            # Add any other parameters here
         }
-        
+
     def set_params(self, **parameters):
         for parameter, value in parameters.items():
             if hasattr(self, parameter):
                 setattr(self, parameter, value)
             else:
                 raise ValueError(f"Invalid parameter: {parameter}")
-

@@ -22,7 +22,8 @@ del train_df['label']
 x_train = train_df.values
 x_train = x_train/255
 x_train = x_train.reshape(-1,28,28,1)
-# test = test.reshape(-1,28,28,1)
+x_test = x_test/255
+x_test = test.reshape(-1,28,28,1)
 
 
 # data augmentation
