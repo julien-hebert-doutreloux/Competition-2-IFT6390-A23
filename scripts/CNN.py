@@ -12,7 +12,6 @@ class CNN:
         # Initialize your custom parameters here
         # Initialize any other variables needed
         self.model = Sequential()
-        self.num_classes = num_classes
         self.learning_rate_reduction = ReduceLROnPlateau(monitor='val_accuracy', patience = 2, verbose=1,factor=0.5, min_lr=0.00001)
         # Build the CNN model
         self.build_model()
@@ -38,6 +37,7 @@ class CNN:
         
     def fit(self, X_train, y_train, X_val, y_val, epochs=10, batch_size=32):
         # Convert labels to one-hot encoding
+        self.num_classes = np.unique(y_train)
         lb = LabelBinarizer()
         y_train_one_hot = lb.fit_transform(y_train)
         y_val_one_hot = lb.fit_transform(y_val)
