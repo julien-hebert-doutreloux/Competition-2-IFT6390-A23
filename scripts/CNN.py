@@ -14,7 +14,7 @@ class CNN:
         self.model = Sequential()
         self.input_shape = input_shape
         self.num_classes = num_classes
-
+        self.learning_rate_reduction = ReduceLROnPlateau(monitor='val_accuracy', patience = 2, verbose=1,factor=0.5, min_lr=0.00001)
         # Build the CNN model
         self.build_model()
 
@@ -43,13 +43,22 @@ class CNN:
         y_train_one_hot = lb.fit_transform(y_train)
         y_val_one_hot = lb.fit_transform(y_val)
         # Train the model
-        self.model.fit(X_train, y_train_one_hot, epochs=epochs, batch_size=batch_size, validation_data=(X_val, y_val_one_hot))
+        self.model.fit(X_train, y_train_one_hot, epochs=epochs, batch_size=batch_size, validation_data=(X_val, y_val_one_hot), callbacks = [self.learning_rate_reduction])
 
     def predict(self, X):
         # Your prediction logic goes here
         predictions = self.model.predict(X)
         return predictions
+    
+    def evaluate(self, X_test, y_test):
+        # Convert labels to one-hot encoding
+        lb = LabelBinarizer()
+        y_test_one_hot = lb.fit_transform(y_test)
 
+        # Evaluate the model on the test set
+        evaluation = self.model.evaluate(X_test, y_test_one_hot)
+        return evaluation
+        
     def get_params(self, deep=True):
         return {
             'input_shape': self.input_shape,
