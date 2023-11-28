@@ -8,7 +8,7 @@ from keras.callbacks import ReduceLROnPlateau
 
 
 class CNN:
-    def __init__(self, num_classes, *args, **kwargs):
+    def __init__(self):
         # Initialize your custom parameters here
         # Initialize any other variables needed
         self.model = Sequential()
@@ -55,8 +55,8 @@ class CNN:
         y_test_one_hot = lb.fit_transform(y_test)
 
         # Evaluate the model on the test set
-        evaluation = self.model.evaluate(X_test, y_test_one_hot)
-        return evaluation
+        model.evaluation = self.model.evaluate(X_test, y_test_one_hot)
+        return model.evaluation
         
     def get_params(self, deep=True):
         return {
