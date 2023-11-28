@@ -13,6 +13,7 @@ def experience2():
 
     # Import data
     data_path = os.path.join('.','data','processed','augmented_flattened_images.pqr')
+    weights_path = os.path.join('.','data','weights','model_weights.h5')
     train_df = pq.read_table(data_path)
     train_df = train_df.to_pandas()
     train_df = train_df.sample(frac=0.10, random_state=11)
@@ -29,12 +30,12 @@ def experience2():
     X_train = X_train.reshape(-1,28,28,1)
     X_val = X_val.reshape(-1,28,28,1)
     
-    if not os.path.exists('model_weights.h5'):
+    if not os.path.exists(weights_path):
         model = CNN()
         # fit
         model.fit(X_train, y_train, X_val, y_val)
         # export
-        model.model.save_weights('model_weights.h5')
+        model.model.save_weights(weights_path)
     else:
         model = CNN()
         model.model.load_weights('model_weights.h5')
