@@ -21,7 +21,7 @@ from sklearn.metrics import classification_report,confusion_matrix
 from keras.callbacks import ReduceLROnPlateau
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelBinarizer
-
+from tensorflow.keras.callbacks import EarlyStopping
 sys.path.append('.')
 from scripts.Data import *
 
@@ -145,8 +145,8 @@ def experience3():
         brightness_range=[0.15,.65])
     m3_datagen.fit(m3_X_train)
     
-    learning_rate_reduction = ReduceLROnPlateau(monitor='val_accuracy', patience = 2, verbose=1, factor=0.5, min_lr=0.00001)
-    
+    learning_rate_reduction = ReduceLROnPlateau(monitor='val_accuracy', patience=3, verbose=1, factor=0.5, min_lr=0.00001)
+    early_stopping = EarlyStopping(monitor='val_accuracy', patience=3, restore_best_weights=True)
     # Modele de base
     model = Sequential()
     model.add(Conv2D(75 , (3,3) , strides = 1 , padding = 'same' , activation = 'relu' , input_shape = (28,28,1)))
@@ -183,10 +183,10 @@ def experience3():
     
     if not os.path.exists(m1_weights_path):
         m1_history = m1_model.fit(
-            m1_datagen.flow(m1_X_train, m1_y_train, batch_size = 128),
+            m1_datagen.flow(m1_X_train, m1_y_train, batch_size = 64),
             epochs = epochs,
             validation_data=(m1_X_val, m1_y_val),
-            callbacks=[learning_rate_reduction]
+            callbacks=[learning_rate_reduction,early_stopping]
             )
         m1_model.save_weights(m1_weights_path)
     else:
@@ -194,10 +194,10 @@ def experience3():
         
     if not os.path.exists(m2_weights_path):
         m2_history = m2_model.fit(
-            m2_datagen.flow(m2_X_train, m2_y_train, batch_size = 128),
+            m2_datagen.flow(m2_X_train, m2_y_train, batch_size = 64),
             epochs = epochs,
             validation_data=(m2_X_val, m2_y_val),
-            callbacks=[learning_rate_reduction]
+            callbacks=[learning_rate_reduction, early_stopping]
             )
         m2_model.save_weights(m2_weights_path)
     else:
@@ -207,10 +207,10 @@ def experience3():
         
     if not os.path.exists(m3_weights_path):
         m3_history = m3_model.fit(
-            m3_datagen.flow(m3_X_train, m3_y_train, batch_size = 128),
+            m3_datagen.flow(m3_X_train, m3_y_train, batch_size = 64),
             epochs = epochs,
             validation_data=(m3_X_val, m3_y_val),
-            callbacks=[learning_rate_reduction]
+            callbacks=[learning_rate_reduction, early_stopping]
             )
         m3_model.save_weights(m3_weights_path)
     else:

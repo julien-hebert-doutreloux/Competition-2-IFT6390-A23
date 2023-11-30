@@ -9,14 +9,15 @@ from torch.utils.data import Dataset
 import torch.nn as nn
 from sklearn.metrics import f1_score
 import seaborn as sns
-
-train_df = pd.read_csv("./data/raw/sign_mnist_train.csv")
+import os 
+train_df = pd.read_csv("./data/raw/sign_mnist_train.csv").sample(n=100)
 old_test_df = pd.read_csv("./data/raw/old_sign_mnist_test.csv")
 test_df = pd.read_csv("./data/raw/test.csv")
 
 class GestureDataset(Dataset):
     def __init__(self,csv,train=True):
-        self.csv=pd.read_csv(csv)
+        self.csv=pd.read_csv(csv).sample(frac=1)
+        self.csv.reset_index(drop=True, inplace=True)
         self.img_size=224
         # print(self.csv['image_names'][:5])
         self.train=train
@@ -24,7 +25,7 @@ class GestureDataset(Dataset):
         self.images=torch.zeros((self.csv.shape[0],1))
         for i in range(1,785):
             temp_text=text+str(i)
-            temp=self.csv[temp_text]
+            temp = self.csv[temp_text].values
             temp=torch.FloatTensor(temp).unsqueeze(1)
             self.images=torch.cat((self.images,temp),1)
         self.labels=self.csv['label']
@@ -90,7 +91,7 @@ class Classifier(nn.Module):
         
         self.Linear1 = nn.Linear(512 * 4 * 4, 256)
         self.dropout=nn.Dropout(0.1)
-        self.Linear3 = nn.Linear(256, 25)
+        self.Linear3 = nn.Linear(256, num_classes)
     def forward(self, x):
         x = self.Conv1(x)
         x = self.Conv2(x)
@@ -106,7 +107,7 @@ class Classifier(nn.Module):
         
         
 # Validating the model against the validation dataset and generate the accuracy and F1-Score.
-def validate(val_loader, model, criterion):
+def validate(val_loader, model, criterion, device):
     model.eval()
     test_labels = [0]
     test_pred = [0]
@@ -167,12 +168,16 @@ model=Classifier()
 model.train()
 checkpoint=None
 device="cpu"
-learning_rate=1e-3
+learning_rate=1e-4
 start_epoch=0
 end_epoch=20
+best_val_accuracy=-1
+
+
+model_save_path = os.path.join('.','data','weights',f'pytorchmodel_weights_{end_epoch}.h5')
 criterion = nn.CrossEntropyLoss().to(device)
 optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
-scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, patience=2, factor=0.5, verbose= True, min_lr=1e-6)
+scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, patience=5, factor=0.5, verbose= True, min_lr=1e-6)
 if checkpoint:
     model.load_state_dict(torch.load(checkpoint)['state_dict'])
     start_epoch=torch.load(checkpoint)['epoch']
@@ -198,8 +203,8 @@ for epoch in range(end_epoch):
         f1=f1_score(labels.cpu().numpy(),predicted.cpu().numpy(),average='weighted')
 
     # Evaluate on the validation set
-    val_accuracy,val_f1,val_loss = validate(model, val_loader, criterion, device)
-    print(f'Epoch [{epoch+1}/{num_epochs}], Loss: {loss.item():.4f}, Val Loss: {val_loss:.4f}, Val Accuracy: {val_accuracy:.4f}')
+    val_accuracy,val_f1,val_loss = validate(val_loader, model, criterion, device)
+    print(f'Epoch [{epoch+1}/{end_epoch}], Loss: {loss.item():.4f}, Val Loss: {val_loss:.4f}, Val Accuracy: {val_accuracy:.4f}')
 
     # Update learning rate
     scheduler.step(val_loss)

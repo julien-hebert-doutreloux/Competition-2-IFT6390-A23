@@ -4,7 +4,6 @@
 *.tar.gz
 *.pkl
 *.json
-*.csv
 *.pdf
 *.pqr
 # Byte-compiled / optimized / DLL files
