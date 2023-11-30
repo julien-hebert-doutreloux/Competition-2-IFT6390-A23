@@ -33,6 +33,7 @@ def experience2():
     # data import
     train_df = pd.read_csv("./data/raw/sign_mnist_train.csv")
     old_test_df = pd.read_csv("./data/raw/old_sign_mnist_test.csv")
+    
     test_df = pd.read_csv("./data/raw/test.csv")
     
     
@@ -102,7 +103,7 @@ def experience2():
     m1_model = tf.keras.models.clone_model(model)
     m1_model.compile(optimizer = 'adam' , loss = 'categorical_crossentropy' , metrics = ['accuracy'])
     
-    epochs = 20
+    epochs = 100
     weights_path = os.path.join('.','data','weights',f'model_weights_{epochs}.h5')
     if not os.path.exists(weights_path):
         m1_history = m1_model.fit(
