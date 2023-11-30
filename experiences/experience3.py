@@ -72,16 +72,17 @@ def experience3():
 
 
     # Normalization
-    m1_X_train = m1_train_df.drop(columns=['label']).values/255
-    m2_X_train = m2_train_df.drop(columns=['label']).values/255
-    m3_X_train = m3_train_df.drop(columns=['label']).values/255
+    m1_X_train = m1_train_df.drop(columns=['label']).values
+    m2_X_train = m2_train_df.drop(columns=['label']).values
+    m3_X_train = m3_train_df.drop(columns=['label']).values
     #
-    m1_X_val = m1_val_df.drop(columns=['label']).values/255
-    m2_X_val = m2_val_df.drop(columns=['label']).values/255
-    m3_X_val = m3_val_df.drop(columns=['label']).values/255
+    m1_X_val = m1_val_df.drop(columns=['label']).values
+    m2_X_val = m2_val_df.drop(columns=['label']).values
+    m3_X_val = m3_val_df.drop(columns=['label']).values
     
     
     X_test = test_df.values/255
+    
     # Reshape
     m1_X_train = m1_X_train.reshape(-1,28,28,1)
     m2_X_train = m2_X_train.reshape(-1,28,28,1)
@@ -95,6 +96,7 @@ def experience3():
     # Data augmentation
     # Modele 1
     m1_datagen = ImageDataGenerator(
+         rescale=1./255,
         featurewise_center=False,  # set input mean to 0 over the dataset
         samplewise_center=False,  # set each sample mean to 0
         featurewise_std_normalization=False,  # divide inputs by std of the dataset
@@ -105,11 +107,13 @@ def experience3():
         width_shift_range=0.1,  # randomly shift images horizontally (fraction of total width)
         height_shift_range=0.1,  # randomly shift images vertically (fraction of total height)
         horizontal_flip=False,  # randomly flip images
-        vertical_flip=False)  # randomly flip images  
+        vertical_flip=False,  # randomly flip images  
+        brightness_range=[0.15,.65])
     m1_datagen.fit(m1_X_train)
     
     # Modele 2
     m2_datagen = ImageDataGenerator(
+         rescale=1./255,
         featurewise_center=False,  # set input mean to 0 over the dataset
         samplewise_center=False,  # set each sample mean to 0
         featurewise_std_normalization=False,  # divide inputs by std of the dataset
@@ -120,11 +124,13 @@ def experience3():
         width_shift_range=0.1,  # randomly shift images horizontally (fraction of total width)
         height_shift_range=0.1,  # randomly shift images vertically (fraction of total height)
         horizontal_flip=False,  # randomly flip images
-        vertical_flip=False)  # randomly flip images  
+        vertical_flip=False,  # randomly flip images  
+        brightness_range=[0.15,.65])
     m2_datagen.fit(m2_X_train)
     
     # Modele 3
     m3_datagen = ImageDataGenerator(
+         rescale=1./255,
         featurewise_center=False,  # set input mean to 0 over the dataset
         samplewise_center=False,  # set each sample mean to 0
         featurewise_std_normalization=False,  # divide inputs by std of the dataset
@@ -135,7 +141,8 @@ def experience3():
         width_shift_range=0.1,  # randomly shift images horizontally (fraction of total width)
         height_shift_range=0.1,  # randomly shift images vertically (fraction of total height)
         horizontal_flip=False,  # randomly flip images
-        vertical_flip=False)  # randomly flip images 
+        vertical_flip=False,  # randomly flip images  
+        brightness_range=[0.15,.65])
     m3_datagen.fit(m3_X_train)
     
     learning_rate_reduction = ReduceLROnPlateau(monitor='val_accuracy', patience = 2, verbose=1, factor=0.5, min_lr=0.00001)

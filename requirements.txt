@@ -12,6 +12,7 @@ pyarrow
 # Data Visualization
 matplotlib
 seaborn
+torch
 
 ipykernel
 jupyter

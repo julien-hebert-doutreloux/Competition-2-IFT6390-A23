@@ -22,6 +22,8 @@ from keras.callbacks import ReduceLROnPlateau
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelBinarizer
 
+from tensorflow.keras.callbacks import EarlyStopping
+
 sys.path.append('.')
 from scripts.Data import *
 
@@ -49,8 +51,8 @@ def experience2():
     m1_y_val = label_binarizer.fit_transform(m1_y_val)
 
     # Normalization
-    m1_X_train = m1_train_df.drop(columns=['label']).values/255
-    m1_X_val = m1_val_df.drop(columns=['label']).values/255
+    m1_X_train = m1_train_df.drop(columns=['label']).values
+    m1_X_val = m1_val_df.drop(columns=['label']).values
     
     # Reshape
     m1_X_train = m1_X_train.reshape(-1,28,28,1)
@@ -61,6 +63,7 @@ def experience2():
     # Data augmentation
     # Modele 1
     m1_datagen = ImageDataGenerator(
+        rescale=1./255,
         featurewise_center=False,  # set input mean to 0 over the dataset
         samplewise_center=False,  # set each sample mean to 0
         featurewise_std_normalization=False,  # divide inputs by std of the dataset
@@ -71,7 +74,8 @@ def experience2():
         width_shift_range=0.1,  # randomly shift images horizontally (fraction of total width)
         height_shift_range=0.1,  # randomly shift images vertically (fraction of total height)
         horizontal_flip=False,  # randomly flip images
-        vertical_flip=False)  # randomly flip images  
+        vertical_flip=False,  # randomly flip images  
+        brightness_range=[0.15,.65])
     m1_datagen.fit(m1_X_train)
     
     learning_rate_reduction = ReduceLROnPlateau(monitor='val_accuracy', patience = 2, verbose=1, factor=0.5, min_lr=0.00001)
@@ -94,7 +98,7 @@ def experience2():
     model.add(Dense(units = 24 , activation = 'softmax'))
     model.compile(optimizer = 'adam' , loss = 'categorical_crossentropy' , metrics = ['accuracy'])
     
-    
+    early_stopping = EarlyStopping(monitor='val_accuracy', patience=2, restore_best_weights=True)
     m1_model = tf.keras.models.clone_model(model)
     m1_model.compile(optimizer = 'adam' , loss = 'categorical_crossentropy' , metrics = ['accuracy'])
     
@@ -105,7 +109,7 @@ def experience2():
                     m1_datagen.flow(m1_X_train, m1_y_train, batch_size = 128),
                     epochs = epochs,
                     validation_data=(m1_X_val, m1_y_val),
-                    callbacks=[learning_rate_reduction]
+                    callbacks=[learning_rate_reduction, early_stopping]
                     )
         m1_model.save_weights(weights_path)
     else:

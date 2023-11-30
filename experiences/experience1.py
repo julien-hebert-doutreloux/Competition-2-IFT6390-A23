@@ -40,8 +40,6 @@ def experience1():
     
     # predict
     y_pred = model.predict(X_test.values)
-
-    print(np.mean(y_test==y_pred))
     
     # prediction on test
     test_df = pd.read_csv(os.path.join('data','raw','test.csv'))
