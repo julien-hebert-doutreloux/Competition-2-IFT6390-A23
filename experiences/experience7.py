@@ -131,7 +131,7 @@ if __name__ == "__main__":
 
         print(classification_report(y_test, y_pred))
         acc = np.mean(y_test==y_pred)
-        formatted_number = "{:.4f}".format(acc)
+        formatted_number = "{:.4f}".format(acc).replace('.','_')
         name_tag = f'{random_state}_{n_epochs}_{formatted_number}'
         weights_path = os.path.join('.','data','weights',f'model_weights_{name_tag}.h5')
         model.save_weights(weights_path)
@@ -144,6 +144,26 @@ if __name__ == "__main__":
         train_loss = history.history['loss']
         val_acc = history.history['val_accuracy']
         val_loss = history.history['val_loss']
+        
+        import pickle
+
+        # Assuming you have already collected the data in train_acc, train_loss, val_acc, val_loss
+
+        # Define file paths for pickle files
+        file_paths = {
+            'train_loss': f'./data/asset/train_loss/train_loss_{name_tag}.pkl',
+            'train_acc': f'./data/asset/train_acc/train_acc_{name_tag}.pkl',
+            'val_loss': f'./data/asset/val_loss/val_loss_{name_tag}.pkl',
+            'val_acc': f'./data/asset/val_acc/val_acc_{name_tag}.pkl'
+        }
+
+        # Save data to respective pickle files
+        for key, data in zip(file_paths.keys(), [train_loss, train_acc, val_loss, val_acc]):
+            with open(file_paths[key], 'wb') as file:
+                pickle.dump(data, file)
+        
+        
+        
         fig.set_size_inches(16,9)
 
         ax[0].plot(epochs , train_acc , 'go-' , label = 'Training Accuracy')
