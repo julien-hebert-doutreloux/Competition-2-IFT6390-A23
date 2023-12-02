@@ -1,6 +1,7 @@
 import numpy as np
+# from sklearn.metrics import accuracy_score
 
-
+# Fortement inspirer de https://github.com/sachaMorin/np-random-forest
 def get_majority_class(labels):
     # This function should return the most common label
     # in the input array.
@@ -98,6 +99,7 @@ class DTC():
         if perfectly_classified or depth == self.max_depth:
             node.output_class = majority_class
             node.is_leaf = True
+            
         else:
             node.find_best_question(x_subset,y_subset)
             node.is_leaf = False
@@ -113,13 +115,14 @@ class DTC():
     def fit(self, x, y):
         self.root_node = self.create_node(x,y,depth=1)
 
-    def predict(self, x):
+    def predict(self, X):
         predictions = []
 
-        for i in range(len(x)):
+        for i in range(len(X)):
             current_node = self.root_node
-            x_i = x[i].reshape(1,-1)
+            x_i = X[i].reshape(1,-1)
             done_descending_tree = False
+            
             while not done_descending_tree:
                 if current_node.is_leaf:
                     predictions.append(current_node.predict())
@@ -152,19 +155,20 @@ class RF:
         self.estimators = []
         
     def fit(self, X, y):
-        
+
+        y = y.reset_index(drop=True)  # Reset the index of y
+
         num_rows = np.ceil(self.bootstrap_fraction * X.shape[0]).astype(int)
         num_cols = np.ceil(self.features_fraction * X.shape[1]).astype(int)
         
         for _ in range(self.n_estimators):
             rows_idx = np.random.choice(X.shape[0], size=num_rows)
             cols_idx = np.random.choice(X.shape[1], size=num_cols, replace=False)
-            
-            # Create noisy subsets x_subset, y_subset here
+
             x_subset, y_subset = X[rows_idx][:,cols_idx], y[rows_idx]
             tree = DTC(max_depth=self.max_depth)
             tree.fit(x_subset, y_subset)
-            self.estimators.append((tree, cols_idx))
+            self.estimators.append((tree,cols_idx))
             
         return self
     
@@ -176,6 +180,20 @@ class RF:
         predictions= np.array([get_majority_class(y) for y in allpredictions.T])
         return predictions
         
+    def score(self, X, y):
+        """
+        Returns the accuracy score on the given test data and labels.
+        
+        Parameters:
+        - X (array-like): Test samples.
+        - y (array-like): True labels for X.
+        
+        Returns:
+        - accuracy (float): Accuracy of the model on the test data.
+        """
+        predictions = self.predict(X)
+        accuracy = accuracy_score(y, predictions)
+        return accuracy
         
     def get_params(self, deep=True):
         params = {
