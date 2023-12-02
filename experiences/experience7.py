@@ -107,14 +107,14 @@ if __name__ == "__main__":
     model.add(Dense(units = 24 , activation = 'softmax'))
     model.compile(optimizer = 'adam' , loss = 'categorical_crossentropy' , metrics = ['accuracy'])
 
-    learning_rate_reduction = ReduceLROnPlateau(monitor='val_accuracy', patience = 5, verbose=1, factor=0.5, min_lr=0.00001)
-    early_stopping = EarlyStopping(monitor='val_accuracy', patience=5, restore_best_weights=True)
+    learning_rate_reduction = ReduceLROnPlateau(monitor='val_accuracy', patience = 4, verbose=1, factor=0.5, min_lr=0.00001)
+    early_stopping = EarlyStopping(monitor='val_accuracy', patience=4, restore_best_weights=True)
 
 
     model = tf.keras.models.clone_model(model)
     model.compile(optimizer = 'adam' , loss = 'categorical_crossentropy' , metrics = ['accuracy'])
 
-    epochs = 1000
+    epochs = 500
 
     if not weights_path:
         history = model.fit(
@@ -207,12 +207,13 @@ if __name__ == "__main__":
         def label_to_uppercase(index):
             return chr(index + 65)  # 'A' is ASCII 65
 
-        # Normalize ASCII sum
+        
+        #Normalize ASCII sum
         def normalize_ascii_sum(ascii_sum):
             while ascii_sum > 122:  # 'z' is ASCII 122
                 ascii_sum -= 65  # 122 ('z') - 65 ('A') + 1
             return ascii_sum
-
+        
         # Convert predictions to uppercase letters and then to ASCII
         ascii_predictions_a = [ord(label_to_uppercase(p)) for p in y_pred_A]
         ascii_predictions_b = [ord(label_to_uppercase(p)) for p in y_pred_B]
@@ -227,7 +228,7 @@ if __name__ == "__main__":
         IDS = np.arange(len(transformed_labels))
         res = pd.DataFrame(data={"id":IDS, 'label':transformed_labels})
 
-        prediction_path = os.path.join('data','prediction','cnn_1.csv')
+        prediction_path = os.path.join('data','prediction','cnn_3.csv')
         print(np.unique(res['label'], return_counts=True))
         res.to_csv(prediction_path, index=False)
 
