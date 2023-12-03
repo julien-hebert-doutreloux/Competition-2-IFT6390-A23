@@ -14,7 +14,7 @@ import sys
 sys.path.append('.')
 from scripts.Data import *
 
-random_state = 2
+random_state = 22
 # data import
 old_test_df = pd.read_csv("./data/raw/old_sign_mnist_test.csv")
 train_df = pd.read_csv("./data/raw/sign_mnist_train.csv").sample(frac=1)
@@ -43,7 +43,7 @@ def reshape_sum_and_fft(row):
     col_fft = fft(col_sum)
     res_fft = row_fft*col_fft
     
-    return np.angle(res_fft)*np.log(np.linalg.norm(res_fft))
+    return  res_fft.real+res_fft.imag
 
 
 # Apply the function to each row of X_train
@@ -60,29 +60,29 @@ rf_classifier = RandomForestClassifier(random_state=random_state)
 
 # Define the hyperparameters and their potential values for the randomized search
 param_dist = {
-    'n_estimators': [int(x) for x in np.linspace(start=10, stop=200, num=10)], 
-    'max_depth': [int(x) for x in np.linspace(10, 110, num=11)] + [None],  
+    'n_estimators': [int(x) for x in np.linspace(start=2, stop=25, num=25)], 
+    'max_depth': [int(x) for x in np.linspace(2, 25, num=25)] + [None],  
     'min_samples_split': [2, 5, 10],
 }
 
 # Perform Randomized Search Cross Validation
-# random_search = RandomizedSearchCV(rf_classifier,
-#                                    param_distributions=param_dist,
-#                                    n_iter=10,
-#                                    cv=5,
-#                                    random_state=random_state,
-#                                    n_jobs=-1)
+random_search = RandomizedSearchCV(rf_classifier,
+                                   param_distributions=param_dist,
+                                   n_iter=25,
+                                   cv=5,
+                                   random_state=random_state,
+                                   n_jobs=-1)
 
-# random_search.fit(X_train, y_train)
+random_search.fit(X_train, y_train)
 
 # Get the best parameters and the best score
-# best_params = random_search.best_params_
-# best_score = random_search.best_score_
+best_params = random_search.best_params_
+best_score = random_search.best_score_
 
-# print("Best Parameters:", best_params)
-# print("Best Score:", best_score)
+print("Best Parameters:", best_params)
+print("Best Score:", best_score)
 
-best_params = {'n_estimators': 115, 'min_samples_split': 2, 'max_depth': 30}
+# best_params = {'n_estimators': 115, 'min_samples_split': 2, 'max_depth': 30}
 model =  RandomForestClassifier(**best_params)
 
 # Train the classifier

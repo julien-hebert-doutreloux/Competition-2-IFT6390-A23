@@ -121,6 +121,7 @@ if __name__ == "__main__":
 
         print(classification_report(y_test, y_pred))
         acc = np.mean(y_test==y_pred)
+        print(f"Accuracy : {acc}")
         
         formatted_number = "{:.4f}".format(acc).replace('.','_')
         name_tag = f'{random_state}_{n_epochs}_{formatted_number}'
@@ -178,10 +179,28 @@ if __name__ == "__main__":
 
         y_pred = np.argmax(model.predict(X_test), axis=1)
         y_pred[y_pred >= 9] +=  1
+        acc = np.mean(y_test==y_pred)
         print(classification_report(y_test, y_pred))
-        
+        print(f"Accuracy : {acc}")
+
+
+    df_A = test_df.filter(like='pixel_a')
+    test_A = df_A.values.reshape(-1,28,28,1)
+    
+    df_B = test_df.filter(like='pixel_b')
+    test_B = df_B.values.reshape(-1,28,28,1)
+
+    # Notre competition
+    y_pred_A = np.argmax(model.predict(test_A), axis=1)
+    y_pred_A[y_pred_A >= 9] +=  1
+    
+    y_pred_B = np.argmax(model.predict(test_B),axis=1)
+    y_pred_B[y_pred_B >= 9] +=  1
+    
+
+    
     # ascii sum
-    y_pred = transform_labels(final_predictions_A,final_predictions_B)
+    y_pred = transform_labels(y_pred_A,y_pred_B)
     
     # export prediction
     file_path = os.path.join('.','data','prediction')

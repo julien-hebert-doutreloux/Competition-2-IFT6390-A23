@@ -50,7 +50,7 @@ def reshape_sum_and_fft(row):
     col_fft = fft(col_sum)
     res_fft = row_fft*col_fft
     
-    return np.angle(res_fft)*np.log(np.linalg.norm(res_fft))
+    return  res_fft.real+res_fft.imag
 
 
 # Apply the function to each row of X_train
