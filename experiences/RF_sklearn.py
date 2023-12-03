@@ -60,8 +60,8 @@ rf_classifier = RandomForestClassifier(random_state=random_state)
 
 # Define the hyperparameters and their potential values for the randomized search
 param_dist = {
-    'n_estimators': [int(x) for x in np.linspace(start=2, stop=25, num=25)], 
-    'max_depth': [int(x) for x in np.linspace(2, 25, num=25)] + [None],  
+    'n_estimators': [int(x) for x in np.linspace(start=2, stop=100, num=25)], 
+    'max_depth': [int(x) for x in np.linspace(2, 100, num=25)] + [None],  
     'min_samples_split': [2, 5, 10],
 }
 
@@ -82,7 +82,8 @@ best_score = random_search.best_score_
 print("Best Parameters:", best_params)
 print("Best Score:", best_score)
 
-# best_params = {'n_estimators': 115, 'min_samples_split': 2, 'max_depth': 30}
+# best_params = {'n_estimators': 25, 'min_samples_split': 5, 'max_depth': 25}
+# {'n_estimators': 91, 'min_samples_split': 2, 'max_depth': 67}
 model =  RandomForestClassifier(**best_params)
 
 # Train the classifier
@@ -102,11 +103,13 @@ name_tag = f'{random_state}_{formatted_number}'
 
 # Plotting the confusion matrix using Seaborn
 plt.figure(figsize=(8, 6))
-sns.heatmap(conf_matrix, annot=True, cmap='Blues', fmt='g')
-plt.xlabel('Predicted labels')
-plt.ylabel('True labels')
-plt.title('Confusion Matrix')
 
+
+# Create heatmap with custom colors
+sns.heatmap(conf_matrix, annot=True, cmap=sns.cubehelix_palette(as_cmap=True), fmt='g')
+plt.xlabel('Predicted labels', fontsize=14)
+plt.ylabel('True labels', fontsize=14)
+plt.title('Confusion Matrix', fontsize=18)
 figure_path = os.path.join('.','figures', f'RF_sklearn_{name_tag}.pdf')
 plt.savefig(figure_path)
 

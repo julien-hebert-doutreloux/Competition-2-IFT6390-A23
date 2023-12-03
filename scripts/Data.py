@@ -67,15 +67,18 @@ def train_vs_val():
                 # Generate curve based on the loaded data
                 epochs = range(len(loaded_data))  # Assuming epochs data is available
                 if 'train' in data_type:
-                    ax_acc.plot(epochs, loaded_data, label=f'{data_type} - Training')
+                    ax_acc.plot(epochs, loaded_data, color='navy', alpha=0.3) # label=f'{data_type} - Training'
                 else:
-                    ax_acc.plot(epochs, loaded_data, label=f'{data_type} - Validation')
+                    ax_acc.plot(epochs, loaded_data,color='crimson', alpha=0.3) #  label=f'{data_type} - Validation'
 
-    # Set plot labels and title for accuracy
-    ax_acc.set_title('Training & Validation Accuracy')
-    #ax_acc.legend()
-    ax_acc.set_xlabel("Epochs")
-    ax_acc.set_ylabel("Accuracy")
+    ax_acc.tick_params(axis='x', labelsize='large')
+    ax_acc.tick_params(axis='y', labelsize='large')
+    ax_acc.set_title('Training & Validation Accuracy', fontsize=18)
+    ax_acc.plot([], [], color='navy', label='Training')
+    ax_acc.plot([], [], color='crimson', label='Validation')
+    ax_acc.legend(loc='best', fontsize=14)
+    ax_acc.set_xlabel("Epochs", fontsize=14)
+    ax_acc.set_ylabel("Accuracy", fontsize=14)
     
     # Save the figures
     
@@ -96,15 +99,19 @@ def train_vs_val():
                 # Generate curve based on the loaded data
                 epochs = range(len(loaded_data))  # Assuming epochs data is available
                 if 'train' in data_type:
-                    ax_loss.plot(epochs, loaded_data, label=f'{data_type} - Training')
+                    ax_loss.plot(epochs, loaded_data, color='navy', alpha=0.3) #  label=f'{data_type} - Training'
                 else:
-                    ax_loss.plot(epochs, loaded_data, label=f'{data_type} - Validation')
+                    ax_loss.plot(epochs, loaded_data, color='crimson', alpha=0.3) # label=f'{data_type} - Validation'
 
     # Set plot labels and title for loss
-    ax_loss.set_title('Training & Validation Loss')
-    #ax_loss.legend()
-    ax_loss.set_xlabel("Epochs")
-    ax_loss.set_ylabel("Loss")
+    ax_loss.tick_params(axis='x', labelsize='large')
+    ax_loss.tick_params(axis='y', labelsize='large')
+    ax_loss.set_title('Training & Validation Loss', fontsize=18)
+    ax_loss.plot([], [], color='navy', label='Training')
+    ax_loss.plot([], [], color='crimson', label='Validation')
+    ax_loss.legend(loc='best',  fontsize=14)
+    ax_loss.set_xlabel("Epochs",  fontsize=14)
+    ax_loss.set_ylabel("Loss", fontsize=14)
 
     figure_path_loss = os.path.join('.', 'figures', 'combined_curves_loss.pdf')
     fig.savefig(figure_path_loss, bbox_inches='tight')
