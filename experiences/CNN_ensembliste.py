@@ -141,7 +141,7 @@ if __name__ == "__main__":
     all_predictions_test = []
     all_predictions_A = []
     all_predictions_B = []
-    
+    # extraire les deux images par range du test set 
     df_A = test_df.filter(like='pixel_a')
     test_A = df_A.values.reshape(-1,28,28,1)
     

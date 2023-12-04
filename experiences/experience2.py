@@ -129,31 +129,12 @@ def experience2():
     y_pred_B = np.argmax(m1_model.predict(test_B),axis=1)
     y_pred_B[y_pred_B >= 9] +=  1    
     
-    def label_to_uppercase(index):
-        return chr(index + 65)  # 'A' is ASCII 65
-
-    # Normalize ASCII sum
-    def normalize_ascii_sum(ascii_sum):
-        while ascii_sum > 122:  # 'z' is ASCII 122
-            ascii_sum -= 65  # 122 ('z') - 65 ('A') + 1
-        return ascii_sum
-
-    # Convert predictions to uppercase letters and then to ASCII
-    ascii_predictions_a = [ord(label_to_uppercase(p)) for p in y_pred_A]
-    ascii_predictions_b = [ord(label_to_uppercase(p)) for p in y_pred_B]
-
-    # Sum and normalize ASCII values
-    ascii_sums = [normalize_ascii_sum(a + b) for a, b in zip(ascii_predictions_a, ascii_predictions_b)]
-
-    # Convert sums to characters
-    transformed_labels = [chr(ascii_sum) for ascii_sum in ascii_sums]
+    # ascii sum
+    y_pred = transform_labels(y_pred_A,y_pred_B)
     
-    #transformed_labels = [transform_labels(label_A, label_B) for label_A, label_B in zip(y_pred_A,y_pred_B)]
-    IDS = np.arange(len(transformed_labels))
-    res = pd.DataFrame(data={"id":IDS, 'label':transformed_labels})
-
-    prediction_path = os.path.join('data','prediction','cnn_1.csv')
-    print(np.unique(res['label'], return_counts=True))
-    res.to_csv(prediction_path, index=False)
+    # export prediction
+    file_path = os.path.join('.','data','prediction')
+    file_name = f'cnn_1'
+    export_prediction(y_pred, file_path, file_name)
 
 experience2()

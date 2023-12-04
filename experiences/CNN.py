@@ -105,7 +105,7 @@ if __name__ == "__main__":
     model.compile(optimizer = 'adam' , loss = 'categorical_crossentropy' , metrics = ['accuracy'])
 
     epochs = 1000
-
+    
     if not weights_path:
         history = model.fit(
                     datagen.flow(X_train, y_train, batch_size = 128),
@@ -183,7 +183,7 @@ if __name__ == "__main__":
         print(classification_report(y_test, y_pred))
         print(f"Accuracy : {acc}")
 
-
+    # extraire les deux images du test set
     df_A = test_df.filter(like='pixel_a')
     test_A = df_A.values.reshape(-1,28,28,1)
     

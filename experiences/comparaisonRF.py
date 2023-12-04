@@ -23,9 +23,9 @@ sklearn_rf.fit(X_train, y_train)
 sklearn_predictions = sklearn_rf.predict(X_test)
 
 # Train and predict using your custom Random Forest
-custom_rf = RF(n_estimators=25)  # Create your RF object with the same parameters
-custom_rf.fit(X_train, y_train)  # Train your custom RF on X_train and y_train
-custom_predictions = custom_rf.predict(X_test)  # Use your predict method to get predictions
+custom_rf = RF(n_estimators=25)  
+custom_rf.fit(X_train, y_train)  
+custom_predictions = custom_rf.predict(X_test)  
 
 # Compare the predictions
 accuracy_sklearn = accuracy_score(y_test, sklearn_predictions)
