@@ -49,10 +49,71 @@ If you want to create a new `requirements.txt` file, you can use `pip freeze`:
 
     pip freeze > requirements.txt
 
-### Example Usage
+## Example Usage
+
+This repository contains several Python scripts for running machine learning experiments related to the IFT6390 Competition 2 (Automne 2023).
+
+## Experiments Overview
+
+### Python Scripts:
+- **CNN.py**: Script for executing the initial Convolutional Neural Network (CNN) model.
+- **CNN_ensembliste.py**: Script involving an ensemble approach with CNN models.
+- **experience9_xgb.py**: Script executing XGBoost.
+- **RF_from_scratch.py**: Script implementing a Random Forest model from scratch.
+- **RF_sklearn.py**: Script utilizing Random Forest from the scikit-learn library.
+- **experience2.py**: Script utilizing Random Forest from the scikit-learn library.
+
+
+### Running a Script
+**Run a Script**:
+   - To execute a specific script, use the following command format:
+     ```bash
+     python script_name.py
+     ```
+     Replace `script_name.py` with the name of the script you want to run:
+     - To execute the CNN script:
+       ```bash
+       python CNN.py
+       ```
+     - For the CNN ensemble script:
+       ```bash
+       python CNN_ensembliste.py
+       ```
+     - Run other scripts similarly by replacing `script_name.py` with the respective script names.
+
+Running these commands will execute the respective Python scripts and perform the defined operations associated with each experiment.
+
 ## Development
+
+## Project Directory Structure
+This repository contains code and scripts for machine learning experiments and data processing related to a specific project.
+Directory Structure Overview
+
+    data: Contains various subdirectories for different data-related tasks:
+        asset: Holds assets or resources related to the project.
+        hyperparameters: Stores hyperparameters used in models or algorithms.
+        prediction: Presumably holds files or output related to predictions.
+        processed: Contains processed data or intermediate results.
+        raw: Stores raw or initial data.
+        weights: Possibly contains weights for machine learning models.
+    data_process: Contains scripts related to data processing:
+    experiences: Holds various scripts for different machine learning experiments:
+        CNN.py: Initial attempt at a Convolutional Neural Network (CNN) model.
+        CNN_ensembliste.py: Possibly an ensemble approach involving CNNs.
+        comparaisonRF.py: Script comparing Random Forest models.
+        Other scripts like RF_from_scratch.py, RF_sklearn.py, etc., are related to Random Forest models using different approaches.
+        Various other scripts denoting different experiments with machine learning models.
+
+    figures: Contains images or visualizations generated from experiments:
+        Images with names like cnn_ensembliste_42_12_0.9918.png, likely represent results or visualizations from the CNN ensemble models.
+    notebooks: Jupyter notebooks for experimentation and analysis:
+    scripts: Contains scripts related to specific functionalities:
+        CNN.py, RF.py, etc., might contain utility functions or modules for CNNs and Random Forests.
+
 ## Authors
 Julien Hebert-Doutreloux & Jeremy Kaufman
+
+
 
 ## License
 Include information about the project's license and any permissions or restrictions regarding the use of the project code and resources.
