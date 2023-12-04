@@ -1,22 +1,40 @@
 import numpy as np
 import pandas as pd
+import os
+def transform_labels(y_pred_A:list, y_pred_B:list):
+    
+    label_to_uppercase = lambda index: chr(index + 65)
 
-def transform_labels(label_A, label_B):
-    # Compute the ASCII sum of the labels and add them together
-    capital_alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+    # Normalize ASCII sum
+    def normalize_ascii_sum(ascii_sum):
+        while ascii_sum > 122:
+            ascii_sum -= 65
+        return ascii_sum
 
-    ascii_sum = ord(capital_alphabet[label_A]) + ord(capital_alphabet[label_B])
+    # Convert predictions to uppercase letters and then to ASCII
+    ascii_predictions_a = [ord(label_to_uppercase(p)) for p in y_pred_A]
+    ascii_predictions_b = [ord(label_to_uppercase(p)) for p in y_pred_B]
 
-    # Adjust the sum if it exceeds the range 122 (ASCII for 'z')
-    while ascii_sum > 122:
-        ascii_sum -= 65
-    # Convert the ASCII sum to its corresponding character
-    final_char = chr(ascii_sum)
+    # Sum and normalize ASCII values
+    ascii_sums = [normalize_ascii_sum(a + b) for a, b in zip(ascii_predictions_a, ascii_predictions_b)]
 
-    # Convert the character to string dtype
-    return str(final_char)
+    # Convert sums to characters
+    transformed_labels = [chr(ascii_sum) for ascii_sum in ascii_sums]
+    
+    return transformed_labels
     
     
+def export_prediction(transformed_labels, file_path, file_name):
+    
+    IDS = np.arange(len(transformed_labels))
+    res = pd.DataFrame(data={"id":IDS, 'label':transformed_labels})
+    
+    prediction_path = os.path.join(file_path, f'{file_name}.csv')
+    print(np.unique(res['label'], return_counts=True))
+    res.to_csv(prediction_path, index=False)
+
+
+
 def train_vs_val():
     import os
     import pickle
@@ -35,7 +53,7 @@ def train_vs_val():
     }
 
     # Create separate figures for accuracy and loss
-    fig, (ax_acc, ax_loss) = plt.subplots(2, 1, figsize=(16, 11))
+    fig, ax_acc = plt.subplots(figsize=(16, 9))
 
     # Separate curves for accuracy
     for data_type, file_pattern in file_patterns.items():
@@ -49,16 +67,26 @@ def train_vs_val():
                 # Generate curve based on the loaded data
                 epochs = range(len(loaded_data))  # Assuming epochs data is available
                 if 'train' in data_type:
-                    ax_acc.plot(epochs, loaded_data, label=f'{data_type} - Training')
+                    ax_acc.plot(epochs, loaded_data, color='navy', alpha=0.3) # label=f'{data_type} - Training'
                 else:
-                    ax_acc.plot(epochs, loaded_data, label=f'{data_type} - Validation')
+                    ax_acc.plot(epochs, loaded_data,color='crimson', alpha=0.3) #  label=f'{data_type} - Validation'
 
-    # Set plot labels and title for accuracy
-    ax_acc.set_title('Training & Validation Accuracy')
-    #ax_acc.legend()
-    ax_acc.set_xlabel("Epochs")
-    ax_acc.set_ylabel("Accuracy")
-
+    ax_acc.tick_params(axis='x', labelsize='large')
+    ax_acc.tick_params(axis='y', labelsize='large')
+    ax_acc.set_title('Training & Validation Accuracy', fontsize=18)
+    ax_acc.plot([], [], color='navy', label='Training')
+    ax_acc.plot([], [], color='crimson', label='Validation')
+    ax_acc.legend(loc='best', fontsize=14)
+    ax_acc.set_xlabel("Epochs", fontsize=14)
+    ax_acc.set_ylabel("Accuracy", fontsize=14)
+    
+    # Save the figures
+    
+    figure_path_acc = os.path.join('.', 'figures', 'combined_curves_accuracy.pdf')
+    fig.savefig(figure_path_acc, bbox_inches='tight')
+    plt.close()
+    
+    fig, ax_loss = plt.subplots(figsize=(16, 9))
     # Separate curves for loss
     for data_type, file_pattern in file_patterns.items():
         if 'loss' in data_type:
@@ -71,23 +99,23 @@ def train_vs_val():
                 # Generate curve based on the loaded data
                 epochs = range(len(loaded_data))  # Assuming epochs data is available
                 if 'train' in data_type:
-                    ax_loss.plot(epochs, loaded_data, label=f'{data_type} - Training')
+                    ax_loss.plot(epochs, loaded_data, color='navy', alpha=0.3) #  label=f'{data_type} - Training'
                 else:
-                    ax_loss.plot(epochs, loaded_data, label=f'{data_type} - Validation')
+                    ax_loss.plot(epochs, loaded_data, color='crimson', alpha=0.3) # label=f'{data_type} - Validation'
 
     # Set plot labels and title for loss
-    ax_loss.set_title('Training & Validation Loss')
-    #ax_loss.legend()
-    ax_loss.set_xlabel("Epochs")
-    ax_loss.set_ylabel("Loss")
+    ax_loss.tick_params(axis='x', labelsize='large')
+    ax_loss.tick_params(axis='y', labelsize='large')
+    ax_loss.set_title('Training & Validation Loss', fontsize=18)
+    ax_loss.plot([], [], color='navy', label='Training')
+    ax_loss.plot([], [], color='crimson', label='Validation')
+    ax_loss.legend(loc='best',  fontsize=14)
+    ax_loss.set_xlabel("Epochs",  fontsize=14)
+    ax_loss.set_ylabel("Loss", fontsize=14)
 
-    # Save the figures
-    figure_path_acc = os.path.join('.', 'figures', 'combined_curves_accuracy.png')
-    fig.savefig(figure_path_acc, bbox_inches='tight')
-
-    figure_path_loss = os.path.join('.', 'figures', 'combined_curves_loss.png')
+    figure_path_loss = os.path.join('.', 'figures', 'combined_curves_loss.pdf')
     fig.savefig(figure_path_loss, bbox_inches='tight')
-
+    plt.close()
     #plt.show()  # Optionally display the figures
 
 
