@@ -34,13 +34,11 @@ def experience9():
     # data import
     train_df = pd.read_csv("./data/raw/sign_mnist_train.csv")
     val_df = pd.read_csv("./data/raw/old_sign_mnist_test.csv")
+    
     y_train = train_df['label'].values
-    #y_train[y_train>=9]+=1
     X_train = train_df.copy().drop(columns=['label']).values
     
     y_val = val_df['label'].values
-    #y_val[y_val>=9]+=1
-
     X_val = val_df.copy().drop(columns=['label']).values
     
     label_encoder = LabelEncoder()
@@ -49,7 +47,7 @@ def experience9():
 
     num_classes = len(label_encoder.classes_)
     
-    # Reshape and resize the images and flatten them through the preprocess function (cutting resolution by .5)
+    # Reshape and resize the images and flatten them through the preprocess function (cutting resolution by a factor of .25)
     X_train = preprocess_images(X_train)
     X_val = preprocess_images(X_val)
     
