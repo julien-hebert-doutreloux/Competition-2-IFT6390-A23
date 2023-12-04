@@ -68,16 +68,16 @@ This repository contains several Python scripts for running machine learning exp
 **Run a Script**:
    - To execute a specific script, use the following command format:
      ```bash
-     python script_name.py
+     python experience/script_name.py
      ```
      Replace `script_name.py` with the name of the script you want to run:
      - To execute the CNN script:
        ```bash
-       python CNN.py
+       python experience/CNN.py
        ```
      - For the CNN ensemble script:
        ```bash
-       python CNN_ensembliste.py
+       python experience/CNN_ensembliste.py
        ```
      - Run other scripts similarly by replacing `script_name.py` with the respective script names.
 
